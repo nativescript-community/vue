@@ -1,0 +1,24 @@
+{
+  "name": "dominative-vue",
+  "version": "0.0.1-alpha.1",
+  "description": "Quirks and hacks for Vue 3 to work with DOMiNATIVE",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {},
+  "keywords": [
+    "{N}",
+    "DOM",
+    "DOMiNATIVE",
+    "Vue",
+    "NativeScript"
+  ],
+  "author": "Yukino Song",
+  "license": "MIT",
+  "repository": "SudoMaker/DOMiNATIVE-Vue",
+  "bugs": "https://github.com/SudoMaker/DOMiNATIVE-Vue/issues",
+  "homepage": "https://github.com/SudoMaker/DOMiNATIVE-Vue",
+  "peerDependencies": {
+    "dominative": "^0.0.4-alpha.3",
+    "vue": "^3.2.39"
+  }
+}
