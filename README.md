@@ -2,6 +2,8 @@
 
 ### **Quirks and hacks for Vue 3 to work with [DOMiNATIVE](https://github.com/SudoMaker/DOMiNATIVE) on [NativeScript](https://nativescript.org/)**
 
+[Playground](https://stackblitz.com/edit/nativescript-dominative-vue-3?file=app/App.vue)
+
 ---
 
 ## Installation
