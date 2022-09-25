@@ -1,6 +1,6 @@
 {
   "name": "dominative-vue",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "Quirks and hacks for Vue 3 to work with DOMiNATIVE",
   "main": "src/index.js",
   "type": "module",

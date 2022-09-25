@@ -5,4 +5,8 @@ const registerComponents = (app) => {
 	app.component('v-template', VTemplate)
 }
 
-export { VTemplate, registerComponents }
+const registerAll = (app) => {
+	registerComponents(app)
+}
+
+export { VTemplate, registerComponents, registerAll }

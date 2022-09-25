@@ -1,6 +1,6 @@
 import './dom.js'
 import { document } from 'dominative'
-import { h, render } from 'vue'
+import { h, render, onBeforeUpdate } from 'vue'
 
 const VTemplate = {
 	props: {
@@ -10,6 +10,12 @@ const VTemplate = {
 		}
 	},
 	setup(props, ctx) {
+		let currentVNode = null
+
+		onBeforeUpdate(() => {
+			currentVNode = ctx.slots.default()[0]
+		})
+
 		return () => {
 			if (!ctx.slots.default) return
 
@@ -27,10 +33,10 @@ const VTemplate = {
 					event.view.__container = fragment
 				},
 				'on:itemLoading': function (event) {
-					const { index } = event
-					let currentVNode = ctx.slots.default()[0]
-					if (currentVNode.children.length) currentVNode = currentVNode.children[index]
-					render(currentVNode, event.view.__container)
+					if (!currentVNode) return
+					const { index, view } = event
+					if (currentVNode.children.length) render(currentVNode.children[index], view.__container)
+					else render(currentVNode, view.__container)
 				}
 			})
 		}
