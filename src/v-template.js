@@ -24,12 +24,13 @@ const VTemplate = {
 			templateVNode = Object.assign({}, templateVNode)
 			templateVNode.children = []
 
-			return h('Template', {
+			return h('ItemTemplate', {
 				prop: props.prop,
 				'on:createView': function (event) {
 					const fragment = document.createDocumentFragment()
 					render(Object.assign({}, templateVNode), fragment)
 					event.view = fragment.firstElementChild
+					if (!event.view) return
 					event.view.__container = fragment
 				},
 				'on:itemLoading': function (event) {

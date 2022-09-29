@@ -22,7 +22,6 @@ npm install dominative-vue dominative @utls/undom-ef vue
 
 ```js
 import { Application } from '@nativescript/core'
-import { document } from 'dominative'
 import { VTemplate, registerComponents } from 'dominative-vue'
 // Remember to import dominative-vue first, vue relies on some hacks to load
 import { createApp } from 'vue'
@@ -37,10 +36,9 @@ registerComponents(app)
 
 Application.run({
 	create: () => {
-		// document is already registered globally
-		const frame = document.createElement('Frame')
-		app.mount(frame)
-		return frame
+		// document is already registered globally by dominative-vue
+		app.mount(document.documentElement)
+		return document
 	}
 })
 

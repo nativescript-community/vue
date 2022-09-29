@@ -1,10 +1,6 @@
-import { document } from 'dominative'
+import { document, register } from 'dominative'
 
-global.window = global
-global.document = document
-global.Event = document.defaultView.Event
-global.Element = document.defaultView.Element
-global.SVGElement = class SVGElement extends global.Element {}
+register(global)
 
 global.navigator = {
 	userAgent: 'Chrome',
@@ -26,5 +22,5 @@ mapProp('TextField', 'value', 'text')
 mapEvent('TextView', 'input', 'textChange')
 mapProp('TextView', 'value', 'text')
 
-mapProp('Template', 'prop', 'key')
+mapProp('ItemTemplate', 'prop', 'key')
 mapProp('Prop', 'prop', 'key')
