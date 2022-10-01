@@ -11,10 +11,10 @@
 Via npm:
 
 ```shell
-npm install dominative-vue dominative @utls/undom-ef vue
+npm install @dominative/vue dominative undom-ng vue
 ```
 
-**Note:** `dominative`, `@utls/undom-ef`, `vue` are peer dependencies, you have to install them manually.
+**Note:** `dominative`, `undom-ng`, `vue` are peer dependencies, you have to install them manually.
 
 ---
 
@@ -22,7 +22,7 @@ npm install dominative-vue dominative @utls/undom-ef vue
 
 ```js
 import { Application } from '@nativescript/core'
-import { VTemplate, registerComponents } from 'dominative-vue'
+import { VTemplate, registerComponents } from '@dominative/vue'
 // Remember to import dominative-vue first, vue relies on some hacks to load
 import { createApp } from 'vue'
 import App from 'App.vue'
