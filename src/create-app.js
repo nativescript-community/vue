@@ -2,10 +2,12 @@ import { document } from 'dominative'
 import { registerAll } from "./register.js"
 import { Application } from "@nativescript/core"
 import { createApp as createAppVue } from "vue"
+import { install } from "./navigation.js"
 
 const createApp = (rootComponent, props) => {
 	const app = createAppVue(rootComponent, props)
 	registerAll(app)
+	install(app)
 
 	let rendered = null
 
