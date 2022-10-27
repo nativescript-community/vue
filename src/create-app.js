@@ -22,6 +22,8 @@ const createApp = (rootComponent, props) => {
 	app.$run = () => Application.run({
 		create: app.$render,
 	})
+
+	return app
 }
 
 export { createApp }
