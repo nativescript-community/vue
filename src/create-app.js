@@ -1,12 +1,11 @@
-import { registerAll } from "./index.js"
+import { document } from 'dominative'
+import { registerAll } from "./register.js"
 import { Application } from "@nativescript/core"
 import { createApp as createAppVue } from "vue"
-import { install } from "./navigation"
 
 const createApp = (rootComponent, props) => {
 	const app = createAppVue(rootComponent, props)
 	registerAll(app)
-	install(app)
 
 	let rendered = null
 
@@ -14,8 +13,7 @@ const createApp = (rootComponent, props) => {
 		if (rendered) return rendered.$el
 
 		const container = document.createDocumentFragment()
-		const ret = app.mount(container)
-		rendered = ret
+		rendered = app.mount(container)
 		return rendered.$el
 	}
 
