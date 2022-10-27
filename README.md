@@ -22,23 +22,13 @@ npm install @dominative/vue dominative undom-ng vue
 
 ```js
 import { Application } from '@nativescript/core'
-import { registerComponents } from '@dominative/vue'
-// Remember to import dominative-vue first, vue relies on some hacks to load
-import { createApp } from 'vue'
+import { createApp } from '@dominative/vue'
 import App from 'App.vue'
 
 const app = createApp(App)
 
-// or
-registerComponents(app)
-
-Application.run({
-	create: () => {
-		// document is already registered globally by dominative-vue
-		app.mount(document.documentElement)
-		return document
-	}
-})
+// Start the app
+app.$run()
 
 ```
 

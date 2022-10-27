@@ -1,14 +1,15 @@
-import './dom.js'
-import VList from './v-list.js'
-import VTemplate from './v-template.js'
+import "./dom.js"
+import VList from "./v-list.js"
+import VTemplate from "./v-template.js"
+import { install } from "./navigation.js"
+import { registerComponents, registerAll } from './register.js'
+import { createApp } from "./create-app.js"
 
-const registerComponents = (app) => {
-	app.component('v-template', VTemplate)
-	app.component('v-list', VList)
+export {
+	VList,
+	VTemplate,
+	registerComponents,
+	registerAll,
+	createApp,
+	install,
 }
-
-const registerAll = (app) => {
-	registerComponents(app)
-}
-
-export { VList, VTemplate, registerComponents, registerAll }
