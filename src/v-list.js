@@ -1,49 +1,63 @@
 import './dom.js'
 import { document } from 'dominative'
-import { h, render } from 'vue'
+import { h, render, onBeforeUpdate, ref } from 'vue'
 
 const VList = {
 	props: {
-		items: null,
 		itemTemplateSelector: {
 			type: null,
 			default: '"__default__"'
 		},
-		props: Object
+		capture: null
 	},
-	setup(componentProps, ctx) {
-		return () => {
-			const {items, itemTemplateSelector, props} = componentProps
+	setup(props, ctx) {
 
-			const itemTemplates = Object.keys(ctx.slots).map((key) => {
-				const itemTemplate = document.createElement('ItemTemplate')
-				itemTemplate.key = key
+		const listView = ref()
 
-				itemTemplate.addEventListener('createView', (event) => {
-					const container = document.createDocumentFragment()
-					const vNode = h('WrapLayout')
-					render(vNode, container)
-					event.view = container.firstElementChild
-					event.view.__container = container
-				})
+		onBeforeUpdate(() => {
+			if (listView.value) listView.value.refresh()
+		})
 
-				itemTemplate.addEventListener('itemLoading', (event) => {
-					const { index, item, view } = event
-					const vNode = h('WrapLayout', null, ctx.slots[key] && ctx.slots[key]({index, item}) || [])
+		const itemTemplateCache = {}
 
-					if (view && view.__container) {
-						render(vNode, view.__container)
-					}
-				})
+		const getItemTemplate = (key) => {
+			if (itemTemplateCache[key]) return itemTemplateCache[key]
 
-				return itemTemplate
+			const itemTemplate = document.createElement('ItemTemplate')
+			itemTemplate.key = key
+
+			itemTemplate.addEventListener('createView', (event) => {
+				const container = document.createDocumentFragment()
+				const vNode = h('WrapLayout')
+				render(vNode, container)
+				event.view = container.firstElementChild
+				event.view.__container = container
 			})
+
+			itemTemplate.addEventListener('itemLoading', (event) => {
+				const { index, item, view } = event
+				const vNode = h('WrapLayout', null, ctx.slots[key] && ctx.slots[key]({index, item}) || [])
+
+				if (view && view.__container) {
+					render(vNode, view.__container)
+				}
+			})
+
+			itemTemplateCache[key] = itemTemplate
+
+			return itemTemplate
+		}
+
+		return () => {
+			const {itemTemplateSelector} = props
+
+			const itemTemplates = ctx.attrs.itemTemplates || Object.keys(ctx.slots).map(getItemTemplate)
 
 			if (itemTemplates.length === 1 && itemTemplates[0].key === 'default') itemTemplates[0].key = '__default__'
 
 			return h('ListView', {
-				...props,
-				items,
+				...ctx.attrs,
+				ref: listView,
 				itemTemplateSelector,
 				itemTemplates
 			})
