@@ -3,6 +3,8 @@ import { registerAll } from "./register.js"
 import { Application, ViewBase } from "@nativescript/core"
 import { createApp as createAppVue } from "vue"
 
+const installedPlugins = [];
+
 const createApp = (rootComponent, props) => {
 	const app = createAppVue(rootComponent, props)
 	registerAll(app)
@@ -21,6 +23,8 @@ const createApp = (rootComponent, props) => {
 		return container
 	}
 
+	applyPlugins(app);
+
 	// Shouldn't expect this method to return
 	// https://v7.docs.nativescript.org/core-concepts/application-lifecycle#application-run
 	app.$run = container => Application.run({
@@ -28,6 +32,21 @@ const createApp = (rootComponent, props) => {
 	})
 
 	return app
+}
+
+const applyPlugins = (app) => {
+	// Use ._use internally to add plugins to not add duplicates to installedPlugins
+	app._use = app.use;
+	app.use = (plugin, options) => {
+		installedPlugins.push({plugin, options})
+		app._use(plugin, options)
+	}
+
+	if (installedPlugins.length > 0) {
+		installedPlugins.forEach((plugin) => {
+			app._use(plugin.plugin, plugin.options)
+		})
+	}
 }
 
 export { createApp }
