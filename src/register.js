@@ -5,7 +5,7 @@ import { installNavigation } from "./navigation.js"
 const registeredPlugins = []
 
 const usePlugin = (plugin, options) => {
-	registeredPlugins.add({plugin, options})
+	registeredPlugins.push({plugin, options})
 }
 
 const applyPlugins = (app) => {
