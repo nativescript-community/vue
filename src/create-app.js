@@ -3,23 +3,6 @@ import { registerAll } from "./register.js"
 import { Application, ViewBase } from "@nativescript/core"
 import { createApp as createAppVue } from "vue"
 
-const installedPlugins = [];
-
-const applyPlugins = (app) => {
-	// Use ._use internally to add plugins to not add duplicates to installedPlugins
-	app._use = app.use;
-	app.use = (plugin, options) => {
-		installedPlugins.push({plugin, options})
-		app._use(plugin, options)
-	}
-
-	if (installedPlugins.length > 0) {
-		installedPlugins.forEach((plugin) => {
-			app._use(plugin.plugin, plugin.options)
-		})
-	}
-}
-
 const createApp = (rootComponent, props) => {
 	const app = createAppVue(rootComponent, props)
 	registerAll(app)
