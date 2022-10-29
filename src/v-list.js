@@ -8,9 +8,14 @@ const VList = {
 			type: null,
 			default: '"__default__"'
 		},
+		wrapper: {
+			type: String,
+			default: 'WrapLayout'
+		},
 		capture: null
 	},
 	setup(props, ctx) {
+		const { wrapper } = props
 
 		const listView = ref()
 
@@ -28,7 +33,7 @@ const VList = {
 
 			itemTemplate.addEventListener('createView', (event) => {
 				const container = document.createDocumentFragment()
-				const vNode = h('WrapLayout')
+				const vNode = h(wrapper)
 				render(vNode, container)
 				event.view = container.firstElementChild
 				event.view.__container = container
@@ -36,7 +41,7 @@ const VList = {
 
 			itemTemplate.addEventListener('itemLoading', (event) => {
 				const { index, item, view } = event
-				const vNode = h('WrapLayout', null, ctx.slots[key] && ctx.slots[key]({index, item}) || [])
+				const vNode = h(wrapper, null, ctx.slots[key] && ctx.slots[key]({index, item}) || [])
 
 				if (view && view.__container) {
 					render(vNode, view.__container)
