@@ -33,9 +33,9 @@ const VList = {
 			const itemTemplate = document.createElement('ItemTemplate')
 			itemTemplate.key = key
 
-			itemTemplate.addEventListener('createView', (event) => {
+			const createView = (event, props, children) => {
 				const container = document.createDocumentFragment()
-				const vNode = h(wrapper)
+				const vNode = h(wrapper, props, children)
 				render(vNode, container)
 				event.view = container.firstElementChild
 				event.view.__container = container
@@ -43,17 +43,22 @@ const VList = {
 				if (process.env.NODE_ENV !== 'production' && !renderChildren && event.view.nextElementSibling) {
 					console.warn(`[DOMiVUE] v-list wrapper '${wrapper.__name}' can only have one root element!`)
 				}
-			})
+			}
 
-			itemTemplate.addEventListener('itemLoading', (event) => {
+			const itemLoading = (event) => {
 				const { index, item, view } = event
-				const renderSlot = () => ctx.slots[key] && ctx.slots[key]({index, item}) || []
-				const vNode = h(wrapper, { index, item }, renderChildren && renderSlot() || renderSlot)
 
-				if (view && view.__container) {
-					render(vNode, view.__container)
-				}
-			})
+				const renderSlot = () => ctx.slots[key] && ctx.slots[key]({index, item}) || []
+				const children = renderChildren && renderSlot() || renderSlot
+				const props = { index, item }
+				if (!view || !view.__container) return createView(event, props, children)
+
+				const vNode = h(wrapper, props, children)
+				render(vNode, event.view.__container)
+			}
+
+			itemTemplate.addEventListener('createView', event => createView(event))
+			itemTemplate.addEventListener('itemLoading', event => itemLoading(event))
 
 			itemTemplateCache[key] = itemTemplate
 
