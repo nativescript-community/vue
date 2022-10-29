@@ -9,13 +9,15 @@ const VList = {
 			default: '"__default__"'
 		},
 		wrapper: {
-			type: String,
+			type: null,
 			default: 'WrapLayout'
 		},
 		capture: null
 	},
 	setup(props, ctx) {
 		const { wrapper } = props
+
+		const renderChildren = typeof wrapper === 'string'
 
 		const listView = ref()
 
@@ -37,11 +39,16 @@ const VList = {
 				render(vNode, container)
 				event.view = container.firstElementChild
 				event.view.__container = container
+
+				if (process.env.NODE_ENV !== 'production' && !renderChildren && event.view.nextElementSibling) {
+					console.warn(`[DOMiVUE] v-list wrapper '${wrapper.__name}' can only have one root element!`)
+				}
 			})
 
 			itemTemplate.addEventListener('itemLoading', (event) => {
 				const { index, item, view } = event
-				const vNode = h(wrapper, null, ctx.slots[key] && ctx.slots[key]({index, item}) || [])
+				const renderSlot = () => ctx.slots[key] && ctx.slots[key]({index, item}) || []
+				const vNode = h(wrapper, { index, item }, renderChildren && renderSlot() || renderSlot)
 
 				if (view && view.__container) {
 					render(vNode, view.__container)
