@@ -30,4 +30,9 @@ const createApp = (rootComponent, props) => {
 	return app
 }
 
-export { createApp }
+const createNativeView = (rootComponent, props, container) => {
+	const app = createApp(rootComponent, props)
+	return app.$render(container)
+}
+
+export { createApp, createNativeView }

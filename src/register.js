@@ -1,6 +1,18 @@
 import VList from "./v-list.js"
 import VTemplate from "./v-template.js"
-import { install } from "./navigation.js"
+import { installNavigation } from "./navigation.js"
+
+const registeredPlugins = []
+
+const usePlugin = (plugin, options) => {
+	registeredPlugins.add({plugin, options})
+}
+
+const applyPlugins = (app) => {
+	for (let {plugin, options} of registeredPlugins) {
+		app.use(plugin, options)
+	}
+}
 
 const registerComponents = (app) => {
 	app.component("v-template", VTemplate)
@@ -9,7 +21,8 @@ const registerComponents = (app) => {
 
 const registerAll = (app) => {
 	registerComponents(app)
-	install(app)
+	installNavigation(app)
+	applyPlugins(app)
 }
 
-export { registerComponents, registerAll }
+export { registerComponents, registerAll, usePlugin, applyPlugins }

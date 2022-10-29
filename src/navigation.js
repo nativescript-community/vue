@@ -5,7 +5,7 @@ import { createApp } from "./create-app.js"
 /**
  * @internal
  */
-export function install(app) {
+export function installNavigation(app) {
 	app.config.globalProperties.$navigateTo = $navigateTo
 	app.config.globalProperties.$navigateBack = $navigateBack
 }
