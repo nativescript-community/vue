@@ -18,7 +18,7 @@
   "bugs": "https://github.com/SudoMaker/DOMiNATIVE-Vue/issues",
   "homepage": "https://github.com/SudoMaker/DOMiNATIVE-Vue",
   "peerDependencies": {
-    "dominative": "^0.0.5-alpha.2",
+    "dominative": "^0.0.5-alpha.3",
     "vue": "^3.2.40"
   },
   "publishConfig": {
