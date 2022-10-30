@@ -2,7 +2,7 @@ import "./dom.js"
 import VList from "./v-list.js"
 import VTemplate from "./v-template.js"
 import { installNavigation } from "./navigation.js"
-import { registerComponents, registerAll, usePlugin, applyPlugins } from './register.js'
+import { registerComponents, registerAll, addGlobalPlugin, applyPlugins } from './register.js'
 import { createApp, createNativeView } from "./create-app.js"
 
 export {
@@ -10,7 +10,7 @@ export {
 	VTemplate,
 	registerComponents,
 	registerAll,
-	usePlugin,
+	addGlobalPlugin,
 	applyPlugins,
 	createApp,
 	createNativeView,

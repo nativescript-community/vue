@@ -4,7 +4,7 @@ import { installNavigation } from "./navigation.js"
 
 const registeredPlugins = []
 
-const usePlugin = (plugin, options) => {
+const addGlobalPlugin = (plugin, options) => {
 	registeredPlugins.push({plugin, options})
 }
 
@@ -25,4 +25,4 @@ const registerAll = (app) => {
 	applyPlugins(app)
 }
 
-export { registerComponents, registerAll, usePlugin, applyPlugins }
+export { registerComponents, registerAll, addGlobalPlugin, applyPlugins }
