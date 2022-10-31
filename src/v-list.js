@@ -1,6 +1,6 @@
-import './dom.js'
+import { LIST_ITEM_HOLDER } from './dom.js'
 import { document } from 'dominative'
-import { h, render, onBeforeUpdate, ref, computed } from 'vue'
+import { h, render, computed } from 'vue'
 
 const VList = {
 	props: {
@@ -19,14 +19,10 @@ const VList = {
 
 		const renderChildren = typeof wrapper === 'string'
 
-		const listView = ref()
-
-		onBeforeUpdate(() => {
-			if (listView.value) listView.value.refresh()
-		})
-
 		const itemTemplateCache = {}
 		const itemTemplates = []
+
+		const createdItem = []
 
 		const getItemTemplate = (key) => {
 			if (itemTemplateCache[key]) return itemTemplateCache[key]
@@ -40,6 +36,8 @@ const VList = {
 				render(vNode, container)
 				event.view = container.firstElementChild
 				event.view.__container = container
+
+				createdItem.push(vNode)
 
 				if (process.env.NODE_ENV !== 'production' && !renderChildren && event.view.nextElementSibling) {
 					console.warn(`[DOMiVUE] v-list wrapper '${wrapper.__name}' can only have one root element!`)
@@ -79,10 +77,9 @@ const VList = {
 
 			return h('ListView', {
 				...ctx.attrs,
-				ref: listView,
 				itemTemplateSelector,
 				itemTemplates: ctx.attrs.itemTemplates || computedItemTemplates.value
-			})
+			}, h(LIST_ITEM_HOLDER, null, createdItem))
 		}
 	}
 }
