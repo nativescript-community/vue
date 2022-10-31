@@ -1,6 +1,6 @@
 import './dom.js'
 import { document } from 'dominative'
-import { h, render, onBeforeUpdate, ref } from 'vue'
+import { h, render, onBeforeUpdate, ref, computed } from 'vue'
 
 const VList = {
 	props: {
@@ -26,6 +26,7 @@ const VList = {
 		})
 
 		const itemTemplateCache = {}
+		const itemTemplates = []
 
 		const getItemTemplate = (key) => {
 			if (itemTemplateCache[key]) return itemTemplateCache[key]
@@ -65,18 +66,22 @@ const VList = {
 			return itemTemplate
 		}
 
-		return () => {
-			const {itemTemplateSelector} = props
-
-			const itemTemplates = ctx.attrs.itemTemplates || Object.keys(ctx.slots).map(getItemTemplate)
+		const computedItemTemplates = computed(() => {
+			itemTemplates.length = 0
+			itemTemplates.push(...Object.keys(ctx.slots).map(getItemTemplate))
 
 			if (itemTemplates.length === 1 && itemTemplates[0].key === 'default') itemTemplates[0].key = '__default__'
+			return itemTemplates
+		})
+
+		return () => {
+			const { itemTemplateSelector } = props
 
 			return h('ListView', {
 				...ctx.attrs,
 				ref: listView,
 				itemTemplateSelector,
-				itemTemplates
+				itemTemplates: ctx.attrs.itemTemplates || computedItemTemplates.value
 			})
 		}
 	}
