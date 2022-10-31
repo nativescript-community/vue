@@ -54,7 +54,7 @@ declare module "@dominative/vue" {
 	 * Creates an app instance from a Vue component and
 	 * returns the NativeScript View.
 	 */
-	export function createNativeView<T = ViewBase>(
+	export function createNativeView<T = ViewBase | Element>(
 		rootComponent: Component,
 		props?: Data,
 		container?: element
