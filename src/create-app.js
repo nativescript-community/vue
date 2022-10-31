@@ -23,9 +23,12 @@ const createApp = (rootComponent, props) => {
 
 	// Shouldn't expect this method to return
 	// https://v7.docs.nativescript.org/core-concepts/application-lifecycle#application-run
-	app.$run = container => Application.run({
-		create: () => app.$render(container)
-	})
+	app.$run = (container) => {
+		const rootView = app.$render(container)
+		return Application.run({
+			create: () => rootView
+		})
+	}
 
 	return app
 }
