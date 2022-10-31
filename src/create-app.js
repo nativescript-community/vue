@@ -1,29 +1,41 @@
-import { registerAll } from "./index.js"
-import { Application } from "@nativescript/core"
+import { document } from 'dominative'
+import { registerAll } from "./register.js"
+import { Application, ViewBase } from "@nativescript/core"
 import { createApp as createAppVue } from "vue"
-import { install } from "./navigation"
 
 const createApp = (rootComponent, props) => {
 	const app = createAppVue(rootComponent, props)
 	registerAll(app)
-	install(app)
 
-	let rendered = null
+	app.$render = (container) => {
+		if (!container) {
+			container = document.createDocumentFragment()
+			const { $el } = app.mount(container)
+			if (!($el instanceof ViewBase)) {
+				throw new Error('[DOMiVUE] App root can only have one element! Provide a container or use only one root element entry.')
+			}
+			return $el
+		}
 
-	app.$render = () => {
-		if (rendered) return rendered.$el
-
-		const container = document.createDocumentFragment()
-		const ret = app.mount(container)
-		rendered = ret
-		return rendered.$el
+		app.mount(container)
+		return container
 	}
 
-	// Shouldn't except this method to return
+	// Shouldn't expect this method to return
 	// https://v7.docs.nativescript.org/core-concepts/application-lifecycle#application-run
-	app.$run = () => Application.run({
-		create: app.$render,
-	})
+	app.$run = (container) => {
+		const rootView = app.$render(container)
+		return Application.run({
+			create: () => rootView
+		})
+	}
+
+	return app
 }
 
-export { createApp }
+const createNativeView = (rootComponent, props, container) => {
+	const app = createApp(rootComponent, props)
+	return app.$render(container)
+}
+
+export { createApp, createNativeView }

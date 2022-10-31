@@ -1,15 +1,18 @@
 import "./dom.js"
 import VList from "./v-list.js"
 import VTemplate from "./v-template.js"
-import { install } from "./navigation.js"
-import { registerComponents, registerAll } from './register.js'
-import { createApp } from "./create-app.js"
+import { installNavigation } from "./navigation.js"
+import { registerComponents, registerAll, addGlobalPlugin, applyPlugins } from './register.js'
+import { createApp, createNativeView } from "./create-app.js"
 
 export {
 	VList,
 	VTemplate,
 	registerComponents,
 	registerAll,
+	addGlobalPlugin,
+	applyPlugins,
 	createApp,
-	install,
+	createNativeView,
+	installNavigation,
 }

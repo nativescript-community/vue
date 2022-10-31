@@ -1,4 +1,8 @@
-import { document, register } from 'dominative'
+import { document, register, registerDOMElement } from 'dominative'
+
+const LIST_ITEM_HOLDER = 'dummy-list-item-holder-which-does-nothing'
+
+registerDOMElement(LIST_ITEM_HOLDER)
 
 register(global)
 
@@ -24,3 +28,5 @@ mapProp('TextView', 'value', 'text')
 
 mapProp('ItemTemplate', 'prop', 'key')
 mapProp('Prop', 'prop', 'key')
+
+export { LIST_ITEM_HOLDER }

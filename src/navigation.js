@@ -5,7 +5,7 @@ import { createApp } from "./create-app.js"
 /**
  * @internal
  */
-export function install(app) {
+export function installNavigation(app) {
 	app.config.globalProperties.$navigateTo = $navigateTo
 	app.config.globalProperties.$navigateBack = $navigateBack
 }
@@ -30,8 +30,7 @@ function resolveFrame(frame) {
 	return Frame.getFrameById(frame)
 }
 
-export async function $navigateTo(target, options) {
-	options = Object.assign({}, options)
+export async function $navigateTo(target, options = {}) {
 	try {
 		const frame = resolveFrame(options.frame)
 
@@ -39,8 +38,8 @@ export async function $navigateTo(target, options) {
 			throw new Error("Failed to resolve frame. Make sure your frame exists.")
 		}
 
-		const navigationApp = createApp(target, options?.props)
-		const targetPage = navigationApp.$render()
+		const navigationApp = createApp(target, options.props)
+		const targetPage = navigationApp.$render(options.target)
 		const handler = (args) => {
 			if (args.isBackNavigation) {
 				targetPage.off("navigatedFrom", handler)
@@ -67,8 +66,8 @@ export async function $navigateTo(target, options) {
 	}
 }
 
-export async function $navigateBack(options) {
-	const frame = resolveFrame(options ? options.frame : undefined)
+export async function $navigateBack(options = {}) {
+	const frame = resolveFrame(options.frame)
 
 	if (!frame) {
 		throw new Error("Failed to resolve frame. Make sure your frame exists.")
