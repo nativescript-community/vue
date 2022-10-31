@@ -10,7 +10,7 @@ const addGlobalPlugin = (plugin, options) => {
 
 const applyPlugins = (app) => {
 	for (let {plugin, options} of registeredPlugins) {
-		app.use(plugin, options)
+		app.use(plugin, ...(options || []))
 	}
 }
 
