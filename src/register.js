@@ -4,13 +4,13 @@ import { installNavigation } from "./navigation.js"
 
 const registeredPlugins = []
 
-const addGlobalPlugin = (plugin, options) => {
+const addGlobalPlugin = (plugin, ...options) => {
 	registeredPlugins.push({plugin, options})
 }
 
 const applyPlugins = (app) => {
 	for (let {plugin, options} of registeredPlugins) {
-		app.use(plugin, options)
+		app.use(plugin, ...options)
 	}
 }
 
