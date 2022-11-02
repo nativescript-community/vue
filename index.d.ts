@@ -1,27 +1,82 @@
-import { document, HTMLElement, HTMLElementTagNameMap, Document } from "dominative";
-import { DefineComponent, ComponentPublicInstance } from 'vue';
-import {NativeElements , IntrinsicElements} from "@vue/runtime-dom";
-import { View } from "@nativescript/core";
+import {
+	document,
+	HTMLElement,
+	HTMLElementTagNameMap,
+	Document,
+	ItemTemplate,
+} from "dominative";
+import { DefineComponent, ComponentPublicInstance } from "vue";
+import { NativeElements, IntrinsicElements } from "@vue/runtime-dom";
+import { ListView, View } from "@nativescript/core";
 import { applyAllNativeSetters } from "@nativescript/core/ui/core/properties";
 
-export type Filter<Set, Needle extends string> = Set extends `${Needle}${infer _X}` ? never : Set;
+export type LiteralUnion<T extends U, U = string> = T | (U & {});
 
-export type ExcludedKeys = "layout" | "measure" | "cssType" | "layoutNativeView" | 'goBack' | "replacePage"
+export type Filter<
+	Set,
+	Needle extends string
+> = Set extends `${Needle}${infer _X}` ? never : Set;
 
-export type PickedNSComponentKeys<T> = Omit<T, Filter<keyof T, "_" | "set" | "get" | "has" | "change" | "each" | "can" | "add" | "create" | "send" | "perform" | "go"> >
+export type ExcludedKeys =
+	| "layout"
+	| "measure"
+	| "cssType"
+	| "layoutNativeView"
+	| "goBack"
+	| "replacePage";
 
-export type DefineNSComponent<T> = DefineComponent<Omit<Partial<T>, keyof ComponentPublicInstance | keyof HTMLElement | ExcludedKeys  | keyof PickedNSComponentKeys<T>>>
+export type PickedNSComponentKeys<T> = Omit<
+	T,
+	Filter<
+		keyof T,
+		| "_"
+		| "set"
+		| "get"
+		| "has"
+		| "change"
+		| "each"
+		| "can"
+		| "add"
+		| "create"
+		| "send"
+		| "perform"
+		| "go"
+	>
+>;
+
+export type DefineNSComponent<T> = DefineComponent<
+	Omit<
+		Partial<T>,
+		| keyof ComponentPublicInstance
+		| keyof HTMLElement
+		| ExcludedKeys
+		| keyof PickedNSComponentKeys<T>
+	>
+>;
 
 declare global {
-  var document: Document
+	var document: Document;
 }
 
-declare module '@vue/runtime-core' {
-  type NSDefaultComponents = {
-    [K in keyof HTMLElementTagNameMap]: DefineNSComponent<
-    HTMLElementTagNameMap[K]>
-  }
-  export interface GlobalComponents extends NSDefaultComponents {}
+declare module "@vue/runtime-core" {
+	type NSDefaultComponents = {
+		[K in keyof HTMLElementTagNameMap]: DefineNSComponent<
+			HTMLElementTagNameMap[K]
+		>;
+	};
+	export interface GlobalComponents extends NSDefaultComponents {
+		"v-list": DefineNSComponent<
+			ListView & {
+				itemTemplateSelector: string;
+				wrapper: LiteralUnion<keyof HTMLElementTagNameMap>;
+			}
+		>;
+		"v-template": DefineNSComponent<
+			ItemTemplate & {
+				prop: string;
+			}
+		>;
+	}
 }
 
 declare module "@dominative/vue" {
