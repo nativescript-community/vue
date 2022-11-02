@@ -9,7 +9,7 @@
       "noEmitHelpers": true,
       "noEmitOnError": true,
       "skipLibCheck": true,
-      "lib": ["es2017", "dom"],
+      "lib": ["es2017"],
       "baseUrl": ".",
     },
     "exclude": ["node_modules"]

@@ -1,3 +1,23 @@
+import { HTMLElement, HTMLElementTagNameMap } from "dominative";
+import { DefineComponent, ComponentPublicInstance } from 'vue';
+import {NativeElements , IntrinsicElements} from "@vue/runtime-dom";
+import { View } from "@nativescript/core";
+
+export type Filter<Set, Needle extends string> = Set extends `${Needle}${infer _X}` ? never : Set;
+
+export type ExcludedKeys = "layout" | "measure" | "cssType" | "layoutNativeView" | 'goBack' | "replacePage"
+
+export type PickedNSComponentKeys<T> = Omit<T, Filter<keyof T, "_" | "set" | "get" | "has" | "change" | "each" | "can" | "add" | "create" | "send" | "perform" | "go"> >
+
+export type DefineNSComponent<T> = DefineComponent<Omit<Partial<T>, keyof ComponentPublicInstance | keyof HTMLElement | ExcludedKeys  | keyof PickedNSComponentKeys<T>>>
+
+declare module '@vue/runtime-core' {
+  export type GlobalComponents = {
+    [K in keyof HTMLElementTagNameMap]: DefineNSComponent<
+    HTMLElementTagNameMap[K]>
+  }
+}
+
 declare module "@dominative/vue" {
 	import { App, Component, Plugin } from "vue";
 	import { View, ViewBase } from "@nativescript/core";
@@ -24,7 +44,7 @@ declare module "@dominative/vue" {
 		/**
 		 * Renders the application instance.
 		 */
-		$run(container?: Element): void;
+		$run(container?: HTMLElement): void;
 	};
 
 	/**
@@ -54,7 +74,7 @@ declare module "@dominative/vue" {
 	 * Creates an app instance from a Vue component and
 	 * returns the NativeScript View.
 	 */
-	export function createNativeView<T = ViewBase | Element>(
+	export function createNativeView<T = HTMLElement>(
 		rootComponent: Component,
 		props?: Data,
 		container?: element
