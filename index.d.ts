@@ -12,10 +12,11 @@ export type PickedNSComponentKeys<T> = Omit<T, Filter<keyof T, "_" | "set" | "ge
 export type DefineNSComponent<T> = DefineComponent<Omit<Partial<T>, keyof ComponentPublicInstance | keyof HTMLElement | ExcludedKeys  | keyof PickedNSComponentKeys<T>>>
 
 declare module '@vue/runtime-core' {
-  export type GlobalComponents = {
+  export type NSDefaultComponents = {
     [K in keyof HTMLElementTagNameMap]: DefineNSComponent<
     HTMLElementTagNameMap[K]>
   }
+  export interface GlobalComponents extends NSDefaultComponents {}
 }
 
 declare module "@dominative/vue" {
