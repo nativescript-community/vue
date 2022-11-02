@@ -1,4 +1,4 @@
-import { HTMLElement, HTMLElementTagNameMap } from "dominative";
+import { document, HTMLElement, HTMLElementTagNameMap, Document } from "dominative";
 import { DefineComponent, ComponentPublicInstance } from 'vue';
 import {NativeElements , IntrinsicElements} from "@vue/runtime-dom";
 import { View } from "@nativescript/core";
@@ -11,8 +11,12 @@ export type PickedNSComponentKeys<T> = Omit<T, Filter<keyof T, "_" | "set" | "ge
 
 export type DefineNSComponent<T> = DefineComponent<Omit<Partial<T>, keyof ComponentPublicInstance | keyof HTMLElement | ExcludedKeys  | keyof PickedNSComponentKeys<T>>>
 
+declare global {
+  var document: Document
+}
+
 declare module '@vue/runtime-core' {
-  export type NSDefaultComponents = {
+  type NSDefaultComponents = {
     [K in keyof HTMLElementTagNameMap]: DefineNSComponent<
     HTMLElementTagNameMap[K]>
   }
