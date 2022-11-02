@@ -2,6 +2,7 @@ import { document, HTMLElement, HTMLElementTagNameMap, Document } from "dominati
 import { DefineComponent, ComponentPublicInstance } from 'vue';
 import {NativeElements , IntrinsicElements} from "@vue/runtime-dom";
 import { View } from "@nativescript/core";
+import { applyAllNativeSetters } from "@nativescript/core/ui/core/properties";
 
 export type Filter<Set, Needle extends string> = Set extends `${Needle}${infer _X}` ? never : Set;
 
@@ -24,14 +25,14 @@ declare module '@vue/runtime-core' {
 }
 
 declare module "@dominative/vue" {
-	import { App, Component, Plugin } from "vue";
+	import { App, Component, ComponentPublicInstance, Plugin } from "vue";
 	import { View, ViewBase } from "@nativescript/core";
 
 	type Data = Record<String, unknown>;
 
 	/**
      * Creates an application instance.
-     * 
+     *
         Example:
         ```js
         import { createApp } from 'vue'
@@ -49,6 +50,14 @@ declare module "@dominative/vue" {
 		/**
 		 * Renders the application instance.
 		 */
+		$render(container?: HTMLElement): ComponentPublicInstance;
+
+		/**
+		 * Start the app as main entry
+		 *
+		 * **NOTE:** This method won't return! Codes below call to this function
+		 * are not likely to run.
+		 */
 		$run(container?: HTMLElement): void;
 	};
 
@@ -56,9 +65,9 @@ declare module "@dominative/vue" {
    * Registers a plugin to be used across app instances. It is recommended
    * to use this method instead of `app.use` so that different screens &
    * layouts will share plugins.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```js
    import {createApp, addGlobalPlugin} from '@dominative/vue';
    import App from './App.vue';
@@ -67,7 +76,7 @@ declare module "@dominative/vue" {
    const pinia = createPinia()
 
    addGlobalPlugin(pinia)
-    
+
    const app = createApp(App);
 
    app.$run();
