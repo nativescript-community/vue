@@ -1,8 +1,5 @@
 import { document, HTMLElement, HTMLElementTagNameMap, Document } from "dominative";
 import { DefineComponent, ComponentPublicInstance } from 'vue';
-import {NativeElements , IntrinsicElements} from "@vue/runtime-dom";
-import { View } from "@nativescript/core";
-import { applyAllNativeSetters } from "@nativescript/core/ui/core/properties";
 
 export type Filter<Set, Needle extends string> = Set extends `${Needle}${infer _X}` ? never : Set;
 
@@ -26,7 +23,6 @@ declare module '@vue/runtime-core' {
 
 declare module "@dominative/vue" {
 	import { App, Component, ComponentPublicInstance, Plugin } from "vue";
-	import { View, ViewBase } from "@nativescript/core";
 
 	type Data = Record<String, unknown>;
 
