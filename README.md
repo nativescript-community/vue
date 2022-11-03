@@ -11,10 +11,10 @@
 Via npm:
 
 ```shell
-npm install @dominative/vue dominative undom-ng vue
+npm install @dominative/vue @nativescript/core dominative undom-ng vue
 ```
 
-**Note:** `dominative`, `undom-ng`, `vue` are peer dependencies, you have to install them manually.
+**Note:** `@nativescript/core`, `dominative`, `undom-ng`, `vue` are peer dependencies, you have to install them manually.
 
 ---
 
