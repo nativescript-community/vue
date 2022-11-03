@@ -1,4 +1,4 @@
-import { ListView } from "@nativescript/core";
+import { ListView, ViewBase } from "@nativescript/core";
 import {
 	Document,
 	Element,
@@ -200,7 +200,7 @@ declare module "@dominative/vue" {
 	 * Creates an app instance from a Vue component and
 	 * returns the NativeScript View.
 	 */
-	export function createNativeView<T = HTMLElement>(
+	export function createNativeView<T = HTMLElement<ViewBase>>(
 		rootComponent: Component,
 		props?: Data,
 		container?: element
