@@ -168,7 +168,7 @@ declare module "@dominative/vue" {
 		/**
 		 * Start the app as main entry
 		 *
-		 * **NOTE:** This method won't return! Codes below call to this function
+		 * **NOTE:** This method won't return! Codes below this function call
 		 * are not likely to run.
 		 */
 		$run(container?: HTMLElement): void;
