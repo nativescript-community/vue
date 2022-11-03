@@ -110,6 +110,7 @@ export type DefineNSComponent<T> = DefineComponent<
 	>
 >;
 
+
 declare global {
 	var document: Document;
 }
