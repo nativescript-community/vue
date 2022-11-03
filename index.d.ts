@@ -1,24 +1,141 @@
-import { document, HTMLElement, HTMLElementTagNameMap, Document } from "dominative";
-import { DefineComponent, ComponentPublicInstance } from 'vue';
+import { ListView, ViewBase } from "@nativescript/core";
+import {
+	Document,
+	Element,
+	ExtractEventNames,
+	HTMLElement,
+	HTMLElementTagNameMap,
+	ItemTemplate,
+	NSComponentsMap,
+	NSComponentsWithTypeOfMap,
+} from "dominative";
+import {
+	Component as VueComponent,
+	ComponentPublicInstance,
+	DefineComponent,
+} from "vue";
 
-export type Filter<Set, Needle extends string> = Set extends `${Needle}${infer _X}` ? never : Set;
+export type Filter<
+	Set,
+	Needle extends string
+> = Set extends `${Needle}${infer _X}` ? never : Set;
 
-export type ExcludedKeys = "layout" | "measure" | "cssType" | "layoutNativeView" | 'goBack' | "replacePage"
+export type MapNativeViewEvents<T, C> = {
+	[K in ExtractEventNames<T> as `on${Capitalize<K>}`]: (object: C) => void;
+};
 
-export type PickedNSComponentKeys<T> = Omit<T, Filter<keyof T, "_" | "set" | "get" | "has" | "change" | "each" | "can" | "add" | "create" | "send" | "perform" | "go"> >
+type NSComponentEventsMap = {
+	[K in keyof NSComponentsMap]: MapNativeViewEvents<
+		typeof NSComponentsWithTypeOfMap[K],
+		NSComponentsMap[K]
+	>;
+};
 
-export type DefineNSComponent<T> = DefineComponent<Omit<Partial<T>, keyof ComponentPublicInstance | keyof HTMLElement | ExcludedKeys  | keyof PickedNSComponentKeys<T>>>
+export type IgnoredKeys =
+	| "layout"
+	| "requestLayout"
+	| "measure"
+	| "cssType"
+	| "layoutNativeView"
+	| "goBack"
+	| "replacePage"
+	| "firstElementChild"
+	| "lastElementChild"
+	| "children"
+	| "childNodes"
+	| "append"
+	| "insertBefore"
+	| "replaceChild"
+	| "appendChild"
+	| "textContent"
+	| "removeChild"
+	| "childElementCount"
+	| "innerHTML"
+	| "outerHTML"
+	| "insertBefore"
+	| "setAttribute"
+	| "getAttribute"
+	| "removeAttribute"
+	| "removeAttributeNS"
+	| "setAttributeNS"
+	| "namespaceURI"
+	| "dispatchEvent"
+	| "getAttributeNS"
+	| "localName"
+	| "nodeName"
+	| "tagName"
+	| "attributes"
+	| "hasChildNodes"
+	| "firstChild"
+	| "lastChild"
+	| "replaceWith"
+	| "cloneNode"
+	| "remove"
+	| "parentNode"
+	| "height"
+	| "width"
+	| "appendData";
+
+export type PickedNSComponentKeys<T> = Omit<
+	T,
+	Filter<
+		keyof T,
+		| "_"
+		| "set"
+		| "get"
+		| "has"
+		| "change"
+		| "each"
+		| "can"
+		| "create"
+		| "send"
+		| "perform"
+		| "go"
+	>
+>;
+
+type OverrideProperties = {
+	style: any;
+	height: string | number;
+	width: string | number;
+};
+
+export type DefineNSComponent<T> = DefineComponent<
+	Omit<
+		Partial<T>,
+		| keyof ComponentPublicInstance
+		| IgnoredKeys
+		| keyof OverrideProperties
+		| keyof PickedNSComponentKeys<T>
+	>
+>;
+
 
 declare global {
-  var document: Document
+	var document: Document;
 }
 
-declare module '@vue/runtime-core' {
-  type NSDefaultComponents = {
-    [K in keyof HTMLElementTagNameMap]: DefineNSComponent<
-    HTMLElementTagNameMap[K]>
-  }
-  export interface GlobalComponents extends NSDefaultComponents {}
+declare module "@vue/runtime-core" {
+	type NSDefaultComponents = {
+		[K in keyof HTMLElementTagNameMap]: DefineNSComponent<
+			HTMLElementTagNameMap[K] & NSComponentEventsMap[K]
+		> &
+			OverrideProperties;
+	};
+	export interface GlobalComponents extends NSDefaultComponents {
+		"v-list": DefineNSComponent<
+			ListView & {
+				itemTemplateSelector: string;
+				wrapper: VueComponent;
+			} & NSComponentEventsMap["ListView"]
+		> &
+			OverrideProperties;
+		"v-template": DefineNSComponent<
+			ItemTemplate & {
+				prop: string;
+			}
+		>;
+	}
 }
 
 declare module "@dominative/vue" {
@@ -27,18 +144,18 @@ declare module "@dominative/vue" {
 	type Data = Record<String, unknown>;
 
 	/**
-     * Creates an application instance.
-     *
-        Example:
-        ```js
-        import { createApp } from 'vue'
-        import App from './App.vue'
+	 * Creates an application instance.
+	 *
+		Example:
+		```js
+		import { createApp } from 'vue'
+		import App from './App.vue'
 
-        const app = createApp(App)
+		const app = createApp(App)
 
-        app.$run(document.createElement("ContentView"));
-     * ```
-     */
+		app.$run(document.createElement("ContentView"));
+	 * ```
+	 */
 	export function createApp(
 		rootComponent: Component,
 		props?: Data
@@ -84,7 +201,7 @@ declare module "@dominative/vue" {
 	 * Creates an app instance from a Vue component and
 	 * returns the NativeScript View.
 	 */
-	export function createNativeView<T = HTMLElement>(
+	export function createNativeView<T = HTMLElement<ViewBase>>(
 		rootComponent: Component,
 		props?: Data,
 		container?: element
