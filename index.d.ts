@@ -1,29 +1,80 @@
+import { ListView } from "@nativescript/core";
 import {
-	document,
+	Document,
+	Element,
+	ExtractEventNames,
 	HTMLElement,
 	HTMLElementTagNameMap,
-	Document,
 	ItemTemplate,
+	NSComponentsMap,
+	NSComponentsWithTypeOfMap,
 } from "dominative";
-import { DefineComponent, ComponentPublicInstance } from "vue";
-import { NativeElements, IntrinsicElements } from "@vue/runtime-dom";
-import { ListView, View } from "@nativescript/core";
-import { applyAllNativeSetters } from "@nativescript/core/ui/core/properties";
-
-export type LiteralUnion<T extends U, U = string> = T | (U & {});
+import {
+	Component as VueComponent,
+	ComponentPublicInstance,
+	DefineComponent,
+} from "vue";
 
 export type Filter<
 	Set,
 	Needle extends string
 > = Set extends `${Needle}${infer _X}` ? never : Set;
 
-export type ExcludedKeys =
+export type MapNativeViewEvents<T, C> = {
+	[K in ExtractEventNames<T> as `on${Capitalize<K>}`]: (object: C) => void;
+};
+
+type NSComponentEventsMap = {
+	[K in keyof NSComponentsMap]: MapNativeViewEvents<
+		typeof NSComponentsWithTypeOfMap[K],
+		NSComponentsMap[K]
+	>;
+};
+
+export type IgnoredKeys =
 	| "layout"
+	| "requestLayout"
 	| "measure"
 	| "cssType"
 	| "layoutNativeView"
 	| "goBack"
-	| "replacePage";
+	| "replacePage"
+	| "firstElementChild"
+	| "lastElementChild"
+	| "children"
+	| "childNodes"
+	| "append"
+	| "insertBefore"
+	| "replaceChild"
+	| "appendChild"
+	| "textContent"
+	| "removeChild"
+	| "childElementCount"
+	| "innerHTML"
+	| "outerHTML"
+	| "insertBefore"
+	| "setAttribute"
+	| "getAttribute"
+	| "removeAttribute"
+	| "removeAttributeNS"
+	| "setAttributeNS"
+	| "namespaceURI"
+	| "dispatchEvent"
+	| "getAttributeNS"
+	| "localName"
+	| "nodeName"
+	| "tagName"
+	| "attributes"
+	| "hasChildNodes"
+	| "firstChild"
+	| "lastChild"
+	| "replaceWith"
+	| "cloneNode"
+	| "remove"
+	| "parentNode"
+	| "height"
+	| "width"
+	| "appendData";
 
 export type PickedNSComponentKeys<T> = Omit<
 	T,
@@ -36,7 +87,6 @@ export type PickedNSComponentKeys<T> = Omit<
 		| "change"
 		| "each"
 		| "can"
-		| "add"
 		| "create"
 		| "send"
 		| "perform"
@@ -44,12 +94,18 @@ export type PickedNSComponentKeys<T> = Omit<
 	>
 >;
 
+type OverrideProperties = {
+	style: any;
+	height: string | number;
+	width: string | number;
+};
+
 export type DefineNSComponent<T> = DefineComponent<
 	Omit<
 		Partial<T>,
 		| keyof ComponentPublicInstance
-		| keyof HTMLElement
-		| ExcludedKeys
+		| IgnoredKeys
+		| keyof OverrideProperties
 		| keyof PickedNSComponentKeys<T>
 	>
 >;
@@ -61,16 +117,18 @@ declare global {
 declare module "@vue/runtime-core" {
 	type NSDefaultComponents = {
 		[K in keyof HTMLElementTagNameMap]: DefineNSComponent<
-			HTMLElementTagNameMap[K]
-		>;
+			HTMLElementTagNameMap[K] & NSComponentEventsMap[K]
+		> &
+			OverrideProperties;
 	};
 	export interface GlobalComponents extends NSDefaultComponents {
 		"v-list": DefineNSComponent<
 			ListView & {
 				itemTemplateSelector: string;
-				wrapper: LiteralUnion<keyof HTMLElementTagNameMap>;
-			}
-		>;
+				wrapper: VueComponent;
+			} & NSComponentEventsMap["ListView"]
+		> &
+			OverrideProperties;
 		"v-template": DefineNSComponent<
 			ItemTemplate & {
 				prop: string;
@@ -81,23 +139,22 @@ declare module "@vue/runtime-core" {
 
 declare module "@dominative/vue" {
 	import { App, Component, ComponentPublicInstance, Plugin } from "vue";
-	import { View, ViewBase } from "@nativescript/core";
 
 	type Data = Record<String, unknown>;
 
 	/**
-     * Creates an application instance.
-     *
-        Example:
-        ```js
-        import { createApp } from 'vue'
-        import App from './App.vue'
+	 * Creates an application instance.
+	 *
+		Example:
+		```js
+		import { createApp } from 'vue'
+		import App from './App.vue'
 
-        const app = createApp(App)
+		const app = createApp(App)
 
-        app.$run(document.createElement("ContentView"));
-     * ```
-     */
+		app.$run(document.createElement("ContentView"));
+	 * ```
+	 */
 	export function createApp(
 		rootComponent: Component,
 		props?: Data
