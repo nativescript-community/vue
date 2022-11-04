@@ -1,4 +1,4 @@
-import { ListView, ViewBase } from "@nativescript/core";
+import { AbsoluteLayout, ListView, ViewBase } from "@nativescript/core";
 import {
 	Document,
 	Element,
@@ -8,6 +8,7 @@ import {
 	ItemTemplate,
 	NSComponentsMap,
 	NSComponentsWithTypeOfMap,
+	DOMEvent,
 } from "dominative";
 import {
 	Component as VueComponent,
@@ -21,21 +22,21 @@ export type Filter<
 > = Set extends `${Needle}${infer _X}` ? never : Set;
 
 export type MapNativeViewEvents<T, C> = {
-	[K in ExtractEventNames<T> as `on${Capitalize<K>}`]: (object: C) => void;
+	[K in ExtractEventNames<T> as `on${Capitalize<K>}`]: (
+		event: DOMEvent<C>
+	) => void;
 };
 
 type NSComponentEventsMap = {
 	[K in keyof NSComponentsMap]: MapNativeViewEvents<
 		typeof NSComponentsWithTypeOfMap[K],
-		NSComponentsMap[K]
+		HTMLElementTagNameMap[K]
 	>;
 };
 
 export type IgnoredKeys =
-	| "layout"
-	| "requestLayout"
-	| "measure"
 	| "cssType"
+	| "requestLayout"
 	| "layoutNativeView"
 	| "goBack"
 	| "replacePage"
@@ -91,6 +92,7 @@ export type PickedNSComponentKeys<T> = Omit<
 		| "send"
 		| "perform"
 		| "go"
+		| "on"
 	>
 >;
 
@@ -100,13 +102,16 @@ type OverrideProperties = {
 	width: string | number;
 };
 
-export type DefineNSComponent<T> = DefineComponent<
-	Omit<
-		Partial<T>,
-		| keyof ComponentPublicInstance
-		| IgnoredKeys
-		| keyof OverrideProperties
-		| keyof PickedNSComponentKeys<T>
+export type DefineNSComponent<T, E> = DefineComponent<
+	Partial<
+		Omit<
+			T,
+			| keyof ComponentPublicInstance
+			| IgnoredKeys
+			| keyof OverrideProperties
+			| keyof PickedNSComponentKeys<T>
+		> &
+			E
 	>
 >;
 
@@ -118,7 +123,8 @@ declare global {
 declare module "@vue/runtime-core" {
 	type NSDefaultComponents = {
 		[K in keyof HTMLElementTagNameMap]: DefineNSComponent<
-			HTMLElementTagNameMap[K] & NSComponentEventsMap[K]
+			HTMLElementTagNameMap[K],
+			NSComponentEventsMap[K]
 		> &
 			OverrideProperties;
 	};
@@ -127,7 +133,8 @@ declare module "@vue/runtime-core" {
 			ListView & {
 				itemTemplateSelector: string;
 				wrapper: VueComponent;
-			} & NSComponentEventsMap["ListView"]
+			},
+			NSComponentEventsMap["ListView"]
 		> &
 			OverrideProperties;
 		"v-template": DefineNSComponent<
