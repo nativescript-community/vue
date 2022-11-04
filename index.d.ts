@@ -9,6 +9,7 @@ import {
 	NSComponentsMap,
 	NSComponentsWithTypeOfMap,
 	DOMEvent,
+	NSCustomComponentsMap
 } from "dominative";
 import {
 	Component as VueComponent,
@@ -22,17 +23,22 @@ export type Filter<
 > = Set extends `${Needle}${infer _X}` ? never : Set;
 
 export type MapNativeViewEvents<T, C> = {
-	[K in ExtractEventNames<T> as `on${Capitalize<K>}`]: (
+	[K in T as `on${Capitalize<K>}`]: (
 		event: DOMEvent<C>
 	) => void;
 };
 
 type NSComponentEventsMap = {
 	[K in keyof NSComponentsMap]: MapNativeViewEvents<
-		typeof NSComponentsWithTypeOfMap[K],
+		HTMLElementTagNameMap[K]["eventNames"],
 		HTMLElementTagNameMap[K]
 	>;
-};
+} & {
+	[K in keyof NSCustomComponentsMap]: MapNativeViewEvents<
+	NSCustomComponentsMap[K]["eventNames"],
+	NSCustomComponentsMap[K]
+>;
+}
 
 export type IgnoredKeys =
 	| "cssType"
@@ -128,20 +134,18 @@ declare module "@vue/runtime-core" {
 		> &
 			OverrideProperties;
 	};
-	export interface GlobalComponents extends NSDefaultComponents {
-		"v-list": DefineNSComponent<
-			ListView & {
-				itemTemplateSelector: string;
-				wrapper: VueComponent;
-			},
-			NSComponentEventsMap["ListView"]
-		> &
-			OverrideProperties;
-		"v-template": DefineNSComponent<
-			ItemTemplate & {
-				prop: string;
-			}
-		>;
+	export interface GlobalComponents extends NSDefaultComponents {}
+}
+
+declare module "dominative" {
+	interface NSCustomComponentsMap {
+		"v-list": ExtendWithCustomEventHandlers<typeof ListView, ListView & {
+			itemTemplateSelector: string;
+			wrapper: VueComponent;
+		}>
+		"v-template": ItemTemplate & {
+			prop: string;
+		}
 	}
 }
 
