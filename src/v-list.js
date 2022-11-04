@@ -11,8 +11,7 @@ const VList = {
 		wrapper: {
 			type: null,
 			default: 'WrapLayout'
-		},
-		capture: null
+		}
 	},
 	setup(props, ctx) {
 		const { wrapper } = props
