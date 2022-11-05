@@ -1,4 +1,4 @@
-import { AbsoluteLayout, ListView, ViewBase } from "@nativescript/core";
+import { AbsoluteLayout, Frame, ListView, ViewBase } from "@nativescript/core";
 import {
 	Document,
 	Element,
@@ -9,7 +9,7 @@ import {
 	NSComponentsMap,
 	NSComponentsWithTypeOfMap,
 	DOMEvent,
-	NSCustomComponentsMap
+	NSCustomComponentsMap,
 } from "dominative";
 import {
 	Component as VueComponent,
@@ -23,9 +23,7 @@ export type Filter<
 > = Set extends `${Needle}${infer _X}` ? never : Set;
 
 export type MapNativeViewEvents<T, C> = {
-	[K in T as `on${Capitalize<K>}`]: (
-		event: DOMEvent<C>
-	) => void;
+	[K in T as `on${Capitalize<K>}`]: (event: DOMEvent<C>) => void;
 };
 
 type NSComponentEventsMap = {
@@ -35,10 +33,10 @@ type NSComponentEventsMap = {
 	>;
 } & {
 	[K in keyof NSCustomComponentsMap]: MapNativeViewEvents<
-	NSCustomComponentsMap[K]["eventNames"],
-	NSCustomComponentsMap[K]
->;
-}
+		NSCustomComponentsMap[K]["eventNames"],
+		NSCustomComponentsMap[K]
+	>;
+};
 
 export type IgnoredKeys =
 	| "cssType"
@@ -121,7 +119,6 @@ export type DefineNSComponent<T, E> = DefineComponent<
 	>
 >;
 
-
 declare global {
 	var document: Document;
 }
@@ -139,13 +136,16 @@ declare module "@vue/runtime-core" {
 
 declare module "dominative" {
 	interface NSCustomComponentsMap {
-		"v-list": ExtendWithCustomEventHandlers<typeof ListView, ListView & {
-			itemTemplateSelector: string;
-			wrapper: VueComponent;
-		}>
+		"v-list": ExtendWithCustomEventHandlers<
+			typeof ListView,
+			ListView & {
+				itemTemplateSelector: string;
+				wrapper: VueComponent;
+			}
+		>;
 		"v-template": ItemTemplate & {
 			prop: string;
-		}
+		};
 	}
 }
 
@@ -217,4 +217,15 @@ declare module "@dominative/vue" {
 		props?: Data,
 		container?: element
 	): T;
+
+	export function installNavigation(app: App<Element>);
+
+	type NavigationOptions = {
+		props: any;
+		frame: Frame;
+		target: HTMLElement;
+	};
+
+	export function $navigateTo(target: VueComponent, options: NavigationOptions);
+	export function $navigateBack(options: NavigationOptions);
 }
