@@ -1,6 +1,6 @@
 {
   "name": "@dominative/vue",
-  "version": "0.0.5-alpha.12",
+  "version": "0.0.5-alpha.13",
   "description": "Quirks and hacks for Vue 3 to work with DOMiNATIVE",
   "main": "src/index.js",
   "type": "module",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/SudoMaker/DOMiNATIVE-Vue",
   "peerDependencies": {
     "@nativescript/core": "~8.3.5",
-    "dominative": "^0.0.6-alpha.7",
+    "dominative": "^0.0.7-alpha.1",
     "vue": "^3.2.41"
   },
   "publishConfig": {

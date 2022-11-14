@@ -1,10 +1,16 @@
-import { document, register, registerDOMElement } from 'dominative'
+import { document, globalRegister, TextField, TextView, registerElement, registerDOMElement } from 'dominative'
 
 const LIST_ITEM_HOLDER = 'dummy-list-item-holder-which-does-nothing'
 
 registerDOMElement(LIST_ITEM_HOLDER)
 
-register(global)
+// eslint-disable-next-line no-undef
+if (typeof __UI_USE_EXTERNAL_RENDERER__ !== 'undefined' && __UI_USE_EXTERNAL_RENDERER__) {
+	registerElement('TextField', TextField)
+	registerElement('TextView', TextView)
+}
+
+globalRegister(global)
 
 global.navigator = {
 	userAgent: 'Chrome',
