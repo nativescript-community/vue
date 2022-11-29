@@ -1,4 +1,4 @@
-import VueLoaderPlugin from 'vue-loader';
+const { VueLoaderPlugin } = require('vue-loader');
 
 const dominativeElements = [
     'AbsoluteLayout',
