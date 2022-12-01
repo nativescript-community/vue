@@ -1,9 +1,8 @@
 {
   "name": "@dominative/vue",
-  "version": "0.0.5-alpha.14",
+  "version": "0.0.6-alpha.1",
   "description": "Quirks and hacks for Vue 3 to work with DOMiNATIVE",
   "main": "src/index.js",
-  "type": "module",
   "types": "index.d.ts",
   "scripts": {},
   "keywords": [
@@ -18,10 +17,15 @@
   "repository": "SudoMaker/DOMiNATIVE-Vue",
   "bugs": "https://github.com/SudoMaker/DOMiNATIVE-Vue/issues",
   "homepage": "https://github.com/SudoMaker/DOMiNATIVE-Vue",
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.2.45",
+    "vue-loader": "^17.0.1"
+  },
   "peerDependencies": {
     "@nativescript/core": "~8.3.5",
+    "undom-ng": "^1.0.2",
     "dominative": "^0.0.7-alpha.2",
-    "vue": "^3.2.41"
+    "vue": "^3.2.45"
   },
   "publishConfig": {
     "access": "public"
