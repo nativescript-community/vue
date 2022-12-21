@@ -1,7 +1,7 @@
 {
-  "name": "@dominative/vue",
+  "name": "@nativescript-community/vue",
   "version": "0.0.6-alpha.1",
-  "description": "Quirks and hacks for Vue 3 to work with DOMiNATIVE",
+  "description": "Alternative version of Vue 3 for NativeScript",
   "main": "src/index.js",
   "types": "index.d.ts",
   "scripts": {},
@@ -10,19 +10,20 @@
     "DOM",
     "DOMiNATIVE",
     "Vue",
-    "NativeScript"
+    "NativeScript",
+    "native"
   ],
   "author": "Yukino Song",
   "license": "MIT",
-  "repository": "SudoMaker/DOMiNATIVE-Vue",
-  "bugs": "https://github.com/SudoMaker/DOMiNATIVE-Vue/issues",
-  "homepage": "https://github.com/SudoMaker/DOMiNATIVE-Vue",
+  "repository": "nativescript-community/vue",
+  "bugs": "https://github.com/nativescript-community/vue/issues",
+  "homepage": "https://github.com/nativescript-community/vue",
   "dependencies": {
     "@vue/compiler-sfc": "^3.2.45",
     "vue-loader": "^17.0.1"
   },
   "peerDependencies": {
-    "@nativescript/core": "~8.3.5",
+    "@nativescript/core": "~8.4.1",
     "undom-ng": "^1.0.2",
     "dominative": "^0.0.7-alpha.2",
     "vue": "^3.2.45"
