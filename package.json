@@ -1,6 +1,6 @@
 {
   "name": "@nativescript-community/vue",
-  "version": "0.0.6-alpha.1",
+  "version": "0.0.7",
   "description": "Alternative version of Vue 3 for NativeScript",
   "main": "src/index.js",
   "types": "index.d.ts",
@@ -19,14 +19,14 @@
   "bugs": "https://github.com/nativescript-community/vue/issues",
   "homepage": "https://github.com/nativescript-community/vue",
   "dependencies": {
-    "@vue/compiler-sfc": "^3.2.45",
-    "vue-loader": "^17.0.1"
+    "@vue/compiler-sfc": "^3.4.13",
+    "vue-loader": "^17.4.2"
   },
   "peerDependencies": {
-    "@nativescript/core": "~8.4.1",
-    "undom-ng": "^1.0.2",
-    "dominative": "^0.0.7-alpha.2",
-    "vue": "^3.2.45"
+    "@nativescript/core": "~8.6.2",
+    "dominative": "^0.1.2",
+    "undom-ng": "^1.1.2",
+    "vue": "^3.4.13"
   },
   "publishConfig": {
     "access": "public"
